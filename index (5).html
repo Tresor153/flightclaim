@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FlightClaim · EU-261 Entschädigungsrechner</title>
+  <meta name="description" content="Berechne deinen Entschädigungsanspruch nach EU-Verordnung 261/2004 kostenlos und sofort." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- ── Background canvas ── -->
+  <div class="bg-grid"></div>
+  <div class="bg-glow bg-glow-1"></div>
+  <div class="bg-glow bg-glow-2"></div>
+
+  <!-- ── Nav ── -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <div class="nav-logo">
+        <span class="logo-mark">✦</span>
+        <span class="logo-text">FlightClaim</span>
+      </div>
+      <div class="nav-badge">EU VO 261/2004</div>
+    </div>
+  </nav>
+
+  <!-- ── Hero ── -->
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="hero-eyebrow">
+        <span class="eyebrow-dot"></span>
+        Kostenloser Entschädigungsrechner
+      </div>
+      <h1 class="hero-title">
+        Dein Flug hatte<br/>
+        <em>Verspätung?</em><br/>
+        Berechne deinen<br/>
+        <span class="title-highlight">Anspruch.</span>
+      </h1>
+      <p class="hero-sub">
+        Nach EU-Verordnung 261/2004 können Passagiere bis zu <strong>600€ Entschädigung</strong> 
+        pro Person erhalten – unabhängig vom Ticketpreis.
+      </p>
+
+      <div class="hero-stats">
+        <div class="stat">
+          <span class="stat-num">250€</span>
+          <span class="stat-label">Kurzstrecke</span>
+        </div>
+        <div class="stat-div">–</div>
+        <div class="stat">
+          <span class="stat-num">400€</span>
+          <span class="stat-label">Mittelstrecke</span>
+        </div>
+        <div class="stat-div">–</div>
+        <div class="stat">
+          <span class="stat-num">600€</span>
+          <span class="stat-label">Langstrecke</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-plane-track">
+      <div class="plane-dot"></div>
+      <svg class="plane-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M22 2L2 8.5L9.5 12L13 22L22 2Z" fill="currentColor"/>
+      </svg>
+    </div>
+  </header>
+
+  <!-- ── Calculator ── -->
+  <main class="main-content">
+    <div class="container">
+
+      <div class="calculator-card">
+        <div class="card-header">
+          <h2>Jetzt berechnen</h2>
+          <p>Alle Angaben werden nur im Browser verarbeitet – keine Daten werden gespeichert.</p>
+        </div>
+
+        <!-- Route Section -->
+        <div class="form-section">
+          <div class="section-label">Flugroute</div>
+
+          <div class="route-row">
+            <!-- Origin -->
+            <div class="input-group">
+              <label for="origin-input">Abflughafen</label>
+              <div class="input-wrapper">
+                <span class="input-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+                  </svg>
+                </span>
+                <input
+                  type="text"
+                  id="origin-input"
+                  placeholder="Stadt oder IATA-Code"
+                  autocomplete="off"
+                  spellcheck="false"
+                  data-selected="false"
+                />
+                <span class="selected-flag" aria-hidden="true"></span>
+              </div>
+              <div class="airport-dropdown" id="origin-dropdown" role="listbox"></div>
+            </div>
+
+            <!-- Swap -->
+            <button class="swap-btn" id="swap-btn" onclick="swapAirports()" title="Flughäfen tauschen" aria-label="Flughäfen tauschen">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M7 16V4m0 0L3 8m4-4l4 4M17 8v12m0 0l4-4m-4 4l-4-4"/>
+              </svg>
+            </button>
+
+            <!-- Destination -->
+            <div class="input-group">
+              <label for="dest-input">Zielflughafen</label>
+              <div class="input-wrapper">
+                <span class="input-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                    <circle cx="12" cy="10" r="3"/>
+                  </svg>
+                </span>
+                <input
+                  type="text"
+                  id="dest-input"
+                  placeholder="Stadt oder IATA-Code"
+                  autocomplete="off"
+                  spellcheck="false"
+                  data-selected="false"
+                />
+                <span class="selected-flag" aria-hidden="true"></span>
+              </div>
+              <div class="airport-dropdown" id="dest-dropdown" role="listbox"></div>
+            </div>
+          </div>
+
+          <!-- Route visual -->
+          <div class="route-visual" id="route-visual">
+            <span class="route-iata" id="origin-iata">---</span>
+            <div class="route-line">
+              <div class="route-plane">✈</div>
+            </div>
+            <span class="route-iata" id="dest-iata">---</span>
+            <span class="route-distance" id="route-distance"></span>
+          </div>
+        </div>
+
+        <!-- Delay Section -->
+        <div class="form-section">
+          <div class="section-label">Verspätung</div>
+
+          <div class="delay-display" id="delay-display">
+            <span class="delay-num">2</span>
+            <span class="delay-unit">Stunden</span>
+            <span class="delay-badge below">Unter Schwelle</span>
+          </div>
+
+          <div class="slider-container">
+            <div class="slider-track-bg">
+              <div class="slider-track-fill" id="slider-track-fill"></div>
+            </div>
+            <input
+              type="range"
+              id="delay-slider"
+              min="1"
+              max="12"
+              value="2"
+              step="1"
+              aria-label="Verspätungsdauer in Stunden"
+            />
+            <div class="slider-ticks">
+              <span>1h</span>
+              <span>3h ⚡</span>
+              <span>5h</span>
+              <span>8h</span>
+              <span>12h+</span>
+            </div>
+          </div>
+
+          <div class="threshold-info">
+            <div class="threshold-item">
+              <span class="threshold-icon">⚡</span>
+              <span><strong>≥ 3h</strong> Ankunftsverspätung → Entschädigungsanspruch entsteht</span>
+            </div>
+            <div class="threshold-item">
+              <span class="threshold-icon">↩️</span>
+              <span><strong>≥ 5h</strong> → Zusätzlich Recht auf Erstattung des Ticketpreises</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Carrier Section -->
+        <div class="form-section">
+          <div class="section-label">Fluggesellschaft</div>
+
+          <div class="carrier-toggle-row">
+            <div class="toggle-wrapper">
+              <label class="toggle-label" for="carrier-eu-toggle">
+                <input type="checkbox" id="carrier-eu-toggle" checked />
+                <span class="toggle-track">
+                  <span class="toggle-thumb"></span>
+                </span>
+              </label>
+              <span class="carrier-label-text" id="carrier-label">EU-/EEA-Fluggesellschaft</span>
+            </div>
+            <div class="carrier-hint">
+              EU-Carrier: Lufthansa, Ryanair, easyJet, Eurowings, Wizz Air, Air France, etc.
+            </div>
+          </div>
+        </div>
+
+        <!-- Error -->
+        <div class="form-error" id="form-error"></div>
+
+        <!-- CTA -->
+        <button class="calc-btn" id="calc-btn">
+          <span class="btn-text">Entschädigung berechnen</span>
+          <span class="btn-icon">→</span>
+        </button>
+      </div>
+
+      <!-- Result -->
+      <div class="result-section" id="result-section"></div>
+
+      <!-- Legal Info Section -->
+      <div class="info-section">
+        <h3 class="info-title">Wie funktioniert EU-Verordnung 261/2004?</h3>
+        <div class="info-grid">
+          <div class="info-card">
+            <div class="info-card-icon">📋</div>
+            <h4>Wann gilt sie?</h4>
+            <p>Die Verordnung gilt für alle Flüge <strong>ab einem EU-Flughafen</strong>, sowie für Flüge <strong>in die EU</strong> mit einer EU-Fluggesellschaft.</p>
+          </div>
+          <div class="info-card">
+            <div class="info-card-icon">⏰</div>
+            <h4>Ab wann Entschädigung?</h4>
+            <p>Der Anspruch entsteht, wenn du am Zielort <strong>mindestens 3 Stunden später</strong> ankommst als geplant – egal ob die Abflugverspätung kürzer war.</p>
+          </div>
+          <div class="info-card">
+            <div class="info-card-icon">💰</div>
+            <h4>Wie hoch ist die Entschädigung?</h4>
+            <p><strong>250€</strong> bis 1.500 km · <strong>400€</strong> bis 3.500 km · <strong>600€</strong> über 3.500 km – jeweils pro Person.</p>
+          </div>
+          <div class="info-card">
+            <div class="info-card-icon">⚡</div>
+            <h4>Außergewöhnliche Umstände</h4>
+            <p>Bei höherer Gewalt (Unwetter, Streik Dritter, politische Unruhen) kann die Fluggesellschaft den Anspruch anfechten. Technische Defekte gelten i.d.R. <em>nicht</em> als außergewöhnlich.</p>
+          </div>
+          <div class="info-card">
+            <div class="info-card-icon">📅</div>
+            <h4>Verjährungsfrist</h4>
+            <p>Der Anspruch verjährt nach <strong>3 Jahren</strong> (Deutschland). In anderen EU-Ländern können andere Fristen gelten – schnell handeln lohnt sich!</p>
+          </div>
+          <div class="info-card">
+            <div class="info-card-icon">✉️</h4>
+            <h4>So gehst du vor</h4>
+            <p>Schreibe die Airline <strong>schriftlich</strong> an. Erhalte keine Antwort binnen 6 Wochen, kannst du die kostenlose Schlichtungsstelle <em>söp</em> einschalten.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ── Footer ── -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <span class="logo-mark">✦</span> FlightClaim
+      </div>
+      <p class="footer-legal">
+        Dieses Tool dient ausschließlich zur Information und stellt keine Rechtsberatung dar.
+        Grundlage ist die <strong>EU-Verordnung (EG) Nr. 261/2004</strong>.
+        Alle Berechnungen erfolgen lokal im Browser – keine Daten werden übertragen.
+      </p>
+      <p class="footer-copy">Gebaut mit ❤️ als Demo-Projekt · Kein kommerzielles Produkt</p>
+    </div>
+  </footer>
+
+  <script src="js/eu261.js"></script>
+  <script src="js/app.js"></script>
+
+  <!-- Fallback airport data for file:// protocol -->
+  <script>
+    window.AIRPORTS_FALLBACK = [];
+  </script>
+</body>
+</html>
