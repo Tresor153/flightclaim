@@ -1,2 +1,0 @@
-# flightclaim
-Fluggastrechte-Rechner 
